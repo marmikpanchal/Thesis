@@ -21,8 +21,6 @@ public class Framework {
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException, InvalidFormatException {
 		System.out.println("\n\nWelcome to Bitcoin Price Prediction Framework!\n\n");
-		//String file = "C:/Users/student/Desktop/Thesis/finaldata.xlsx";
-		// C:/Users/student/Desktop/Thesis/trainingdataset.xlsx
 		runner();
 
 		return;
