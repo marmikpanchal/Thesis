@@ -12,6 +12,8 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.rosuda.JRI.REXP;
+import org.rosuda.JRI.Rengine;
 
 public class Framework {
 	
@@ -21,8 +23,20 @@ public class Framework {
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException, InvalidFormatException {
 		System.out.println("\n\nWelcome to Bitcoin Price Prediction Framework!\n\n");
-		runner();
-
+		//runner();
+		
+		String my[] = { "--vanilla" };
+		Rengine re = new Rengine(my, false, null);
+		re.eval(String.format("g <- '%s'", "Hello R..."));
+		REXP result = re.eval("g");
+		System.out.println("Greeting R test...: " + result);
+		
+		String javaVector = "c(1,2,3,4,5)";
+		re.eval("rVector="+javaVector);
+		re.eval("meanVal=mean(rVector)");
+		double mean = re.eval("meanVal").asDouble();
+		System.out.println("Mean of the vector is=" + mean);
+		
 		return;
 	}
 	
