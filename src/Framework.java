@@ -23,7 +23,6 @@ public class Framework {
 		System.out.println("\n\nWelcome to Bitcoin Price Prediction Framework!\n\n");
 		//String file = "C:/Users/student/Desktop/Thesis/finaldata.xlsx";
 		// C:/Users/student/Desktop/Thesis/trainingdataset.xlsx
-		//System.out.println("[Importing Data from Excel file: " + file + " ]");
 		runner();
 
 		return;
