@@ -150,6 +150,8 @@ public class Framework {
 		}
 		
 		System.out.println("\nAdded " + totalRows + " entries to the Dataset!");
+		wb.close();
+		fis.close();
 	}
 	
 	public static void addData(ArrayList<Data> dataset, String[] data) {
