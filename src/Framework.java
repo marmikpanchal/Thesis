@@ -69,11 +69,12 @@ public class Framework {
 	@SuppressWarnings("resource")
 	public static void configTrainingDataset(Scanner reader) throws FileNotFoundException, InvalidFormatException, IOException {
 		
-		System.out.print("Type in the path of your Training Dataset: ");
-		
+		System.out.print("Type in the filename of your Training Dataset: ");
+		String path = "C:/Users/student/Desktop/Thesis/";
 		reader = new Scanner(System.in);
-		String path = reader.next();
-
+		String filename = reader.next();
+		path = path + filename + ".xlsx";
+		
 		while(true) {
 			File file = new File(path);
 			if (!file.exists()) {
@@ -92,10 +93,11 @@ public class Framework {
 	@SuppressWarnings("resource")
 	public static void configTestingDataset(Scanner reader) throws FileNotFoundException, InvalidFormatException, IOException {
 		
-		System.out.print("Type in the path of your Testing Dataset: ");
-		
+		System.out.print("Type in the filename of your Testing Dataset: ");
+		String path = "C:/Users/student/Desktop/Thesis/";
 		reader = new Scanner(System.in);
-		String path = reader.next();
+		String filename = reader.next();
+		path = path + filename + ".xlsx";
 
 		while(true) {
 			File file = new File(path);
