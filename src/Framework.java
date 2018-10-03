@@ -172,7 +172,16 @@ public class Framework {
 	
 	public static void predictionOutcome(Rengine re) {
 		
-		
+		String testcsv = "C:/Users/student/Desktop/Thesis/testcsv.csv";
+		re.assign("test", testcsv);
+		re.eval("testData <- read.csv(test)");
+		re.eval("result <- predictData(testData, trainRules)");
+		REXP result = re.eval("capture.output(result)");
+		String[] output = result.asStringArray();
+		System.out.println("Size of output: " + output.length);
+		for (String s : output) {
+			System.out.println(s);
+		}
 		
 	}
 	
