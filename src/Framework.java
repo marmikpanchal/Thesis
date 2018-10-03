@@ -23,7 +23,9 @@ public class Framework {
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException, InvalidFormatException {
 		System.out.println("\n\nWelcome to Bitcoin Price Prediction Framework!\n\n");
-		runner();
+		Rengine re = new Rengine(new String [] {"--vanilla"}, false, null);
+		
+		runner(re);
 		
 //		String my[] = { "--vanilla" };
 //		Rengine re = new Rengine(my, false, null);
@@ -69,7 +71,11 @@ public class Framework {
 	}
 	
 	
-	public static void runner() throws FileNotFoundException, InvalidFormatException, IOException {
+	public static void runner(Rengine re) throws FileNotFoundException, InvalidFormatException, IOException {
+		
+		re.eval("library(inductrdr)");
+		re.eval("library(Rcpp)");
+		
 		Scanner reader = new Scanner(System.in); 
 		while (true) {
 			printOptions();
@@ -81,7 +87,13 @@ public class Framework {
 				configTestingDataset(reader);
 			}
 			else if (choice == 3) {
-				generateRules();
+				generateRules(re);
+			}
+			else if (choice == 4) {
+				System.out.println("\n\nNOT YET IMPLEMENTED!\n\n");
+			}
+			else if (choice == 5) {
+				predictionOutcome(re);
 			}
 			else if (choice == 6) {
 				System.out.println("\nExiting the Framework!");
@@ -148,15 +160,21 @@ public class Framework {
 		re.eval("trainData <- read.csv(train)");
 		re.eval("vec <- c(2,2,2,1,1,2,0)");
 		re.eval("trainRules <- createRules(trainData, vec)");
-		re.eval("rules <- outputRules(trainRules)");
-		REXP result = re.eval("capture.output(rules)");
+		REXP result = re.eval("capture.output(outputRules(trainRules))");
 		String[] output = result.asStringArray();
+		System.out.println("Size of output: " + output.length);
 		for (String s : output) {
 			System.out.println(s);
 		}
 		
 	}
 	
+	
+	public static void predictionOutcome(Rengine re) {
+		
+		
+		
+	}
 	
 	public static void loadFile(String filename, ArrayList<Data> dataset) throws FileNotFoundException, IOException, InvalidFormatException {
 		
