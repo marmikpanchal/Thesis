@@ -217,10 +217,10 @@ public class Framework {
 				addCondition(reader);
 			}
 			else if (choice == 2) {
-				editCondition();
+				editCondition(reader);
 			}
 			else if (choice == 3) {
-				deleteCondition();
+				deleteCondition(reader);
 			}
 			else if (choice == 4) {
 				displayTerms();
@@ -261,8 +261,8 @@ public class Framework {
 	
 	public static void addCondition(Scanner reader) {
 		
-		System.out.println("\n\nType the index number of condition insertion");
 		displayTerms();
+		System.out.println("\n\nType the index number of condition insertion");
 		System.out.print("> ");
 		int index = reader.nextInt();
 		
@@ -274,7 +274,7 @@ public class Framework {
 		double value = reader.nextDouble();
 		String condition = attribute + " " + operator + " " + Double.toString(value);
 		
-		System.out.println("\nAdding the condition \"" + condition + "\" to the selected index");
+		System.out.println("\nAdded the condition \"" + condition + "\" to the corresponding branch");
 		
 		String before = rules.get(index+1);
 		int count = before.length() - before.replace("|", "").length();
@@ -289,12 +289,90 @@ public class Framework {
 		
 	}
 	
-	public static void editCondition() {
+	public static void editCondition(Scanner reader) {
+		
+		int i = 0;
+		boolean flag = false;
+		for (String s : rules) {
+			if (s.matches(".*Terms:")) {
+				System.out.println("["+i+"]" + " Terms:");
+				flag = true;
+			}
+			else if (s.matches(".*If_true:.*")) {
+				flag = false;
+			}
+			else if (flag == true) {
+				String cond = s.trim().replaceAll("\\s{2,}", "");
+				cond = cond.trim().replaceAll("\\|", "");
+				System.out.println("\t" + "["+i+"]  " + cond);
+			}
+			i++;
+		}
+		
+		
+		System.out.println("\n\nType the index number of the condition that you would like to edit:");
+		System.out.print("> ");
+		int index = reader.nextInt();
+		
+		System.out.print("\nType attribute:\t");
+		String attribute = reader.next();
+		System.out.print("Type operator:\t");
+		String operator = reader.next();
+		System.out.print("Type value:\t");
+		double value = reader.nextDouble();
+		String condition = attribute + " " + operator + " " + Double.toString(value);
+
+		
+		System.out.println("\nEdited the condition at index " + index + " in the rules");
+		
+		String before = rules.get(index+1);
+		int count = before.length() - before.replace("|", "").length();
+		
+		String insertRule = "";
+		for (int j = 0; j < count; j++) {
+			insertRule += "|   ";
+		}
+		insertRule += " ";
+		insertRule += condition;
+		rules.remove(index);
+		rules.add(index, insertRule);
 		
 	}
 	
-	public static void deleteCondition() {
+	public static void deleteCondition(Scanner reader) {
 		
+		int i = 0;
+		boolean flag = false;
+		for (String s : rules) {
+			if (s.matches(".*Terms:")) {
+				System.out.println("["+i+"]" + " Terms:");
+				flag = true;
+			}
+			else if (s.matches(".*If_true:.*")) {
+				flag = false;
+			}
+			else if (flag == true) {
+				String cond = s.trim().replaceAll("\\s{2,}", "");
+				cond = cond.trim().replaceAll("\\|", "");
+				System.out.println("\t" + "["+i+"]  " + cond);
+			}
+			i++;
+		}
+
+		while (true) {
+			
+			System.out.println("\n\nType the index number of the condition that you would like to delete: ");
+			System.out.print("> ");
+			int index = reader.nextInt();
+			
+			if (index >= 0 && index < rules.size()) {
+				rules.remove(index);
+				System.out.println("Sucessfully removed the condition at index " + index);
+				break;
+			} else {
+				System.out.println("Invalid Index! Please try again!");
+			}
+		}
 	}
 	
 	
