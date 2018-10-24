@@ -19,6 +19,7 @@ public class Framework {
 	
 	static ArrayList<Data> trainingDataset = new ArrayList<Data>();
 	static ArrayList<Data> testingDataset = new ArrayList<Data>();
+	static ArrayList<String> rules = new ArrayList<String>();
 	
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException, InvalidFormatException {
@@ -63,10 +64,13 @@ public class Framework {
 		System.out.println("\n\n1. Configure training dataset");
 		System.out.println("2. Configure testing dataset");
 		System.out.println("3. Generate Rules [NOTE: choose training dataset first]");
-		System.out.println("4. Modify Rules [NOTE: choose training dataset first]");
-		System.out.println("5. Predict Test Dataset and Display Results [NOTE: choose training and testing datasets first]");
-		System.out.println("6. EXIT\n\n");
-		System.out.print("CHOOSE YOUR OPTION: ");
+		System.out.println("4. Display Rules");
+		System.out.println("5. Modify Rules [NOTE: choose training dataset first]");
+		System.out.println("6. Predict Test Dataset and Display Results [NOTE: choose training and testing datasets first]");
+		System.out.println("7. Exit\n");
+		System.out.println("CHOOSE YOUR OPTION:");
+		System.out.print("> ");
+		
 
 	}
 	
@@ -82,7 +86,7 @@ public class Framework {
 			int choice = reader.nextInt();
 			if (choice == 1) {
 				configTrainingDataset(reader);
-			} 
+			}
 			else if (choice == 2) {
 				configTestingDataset(reader);
 			}
@@ -90,12 +94,15 @@ public class Framework {
 				generateRules(re);
 			}
 			else if (choice == 4) {
-				System.out.println("\n\nNOT YET IMPLEMENTED!\n\n");
+				displayRules();
 			}
 			else if (choice == 5) {
-				predictionOutcome(re);
+				modifyRules(reader);
 			}
 			else if (choice == 6) {
+				predictionOutcome(re);
+			}
+			else if (choice == 7) {
 				System.out.println("\nExiting the Framework!");
 				System.out.println("DONE.");
 				reader.close();
@@ -107,7 +114,8 @@ public class Framework {
 	@SuppressWarnings("resource")
 	public static void configTrainingDataset(Scanner reader) throws FileNotFoundException, InvalidFormatException, IOException {
 		
-		System.out.print("Type in the filename of your Training Dataset: ");
+		System.out.println("Type in the filename of your Training Dataset: ");
+		System.out.print("> ");
 		String path = "C:/Users/student/Desktop/Thesis/";
 		reader = new Scanner(System.in);
 		String filename = reader.next();
@@ -117,7 +125,8 @@ public class Framework {
 			File file = new File(path);
 			if (!file.exists()) {
 				System.out.println("FILE NOT FOUND! TRY AGAIN!\n");
-				System.out.println("Type in the path of your Training Dataset: ");
+				System.out.println("Type in the filename of your Training Dataset: ");
+				System.out.print("> ");
 				path = reader.next();
 			} else {
 				break;
@@ -128,10 +137,12 @@ public class Framework {
 		loadFile(path, trainingDataset);
 	}
 	
+	
 	@SuppressWarnings("resource")
 	public static void configTestingDataset(Scanner reader) throws FileNotFoundException, InvalidFormatException, IOException {
 		
-		System.out.print("Type in the filename of your Testing Dataset: ");
+		System.out.println("Type in the filename of your Testing Dataset: ");
+		System.out.print("> ");
 		String path = "C:/Users/student/Desktop/Thesis/";
 		reader = new Scanner(System.in);
 		String filename = reader.next();
@@ -141,7 +152,8 @@ public class Framework {
 			File file = new File(path);
 			if (!file.exists()) {
 				System.out.println("FILE NOT FOUND! TRY AGAIN!\n");
-				System.out.println("Type in the path of your Testing Dataset: ");
+				System.out.println("Type in the filename of your Testing Dataset: ");
+				System.out.print("> ");
 				path = reader.next();
 			} else {
 				break;
@@ -155,17 +167,133 @@ public class Framework {
 	
 	public static void generateRules(Rengine re) {
 		
+//		if (trainingDataset.isEmpty()) {
+//			System.out.println("Please select the training dataset!\n");
+//			return;
+//		}
+		
 		String traincsv = "C:/Users/student/Desktop/Thesis/traincsv.csv";
+		
 		re.assign("train", traincsv);
 		re.eval("trainData <- read.csv(train)");
 		re.eval("vec <- c(2,2,2,1,1,2,0)");
 		re.eval("trainRules <- createRules(trainData, vec)");
+		
 		REXP result = re.eval("capture.output(outputRules(trainRules))");
+		
 		String[] output = result.asStringArray();
+		
 		System.out.println("Size of output: " + output.length);
+		
+		int i = 0;
 		for (String s : output) {
-			System.out.println(s);
+			rules.add(s);
+			System.out.println("["+ i++ +"]\t" + s);
 		}
+		
+	}
+	
+	public static void modifyRules(Scanner reader) {
+		
+		int i = 0;
+		for (String s : rules) {
+			System.out.println("["+ i++ +"]\t" + s);
+		}
+		
+		
+		while (true) {
+
+			System.out.println("\n\nSelect from the following options:\n");
+			System.out.println("1. Add a Condition");
+			System.out.println("2. Edit a Condition");
+			System.out.println("3. Delete a Condition");
+			System.out.println("4. Display Terms");
+			System.out.println("5. Go Back to Main Screen");
+			System.out.println("\nCHOOSE YOUR OPTION:");
+			System.out.print("> ");
+			
+			int choice = reader.nextInt();
+			if (choice == 1) {
+				addCondition(reader);
+			}
+			else if (choice == 2) {
+				editCondition();
+			}
+			else if (choice == 3) {
+				deleteCondition();
+			}
+			else if (choice == 4) {
+				displayTerms();
+			} 
+			else if (choice == 5) {
+				break;
+			}
+		}
+	}
+	
+	public static void displayRules() {
+		int i = 0;
+		for (String s : rules) {
+			System.out.println("["+ i++ +"]\t" + s);
+		}
+	}
+	
+	public static void displayTerms() {
+		int i = 0;
+		boolean flag = false;
+		for (String s : rules) {
+			if (s.matches(".*Terms:")) {
+				System.out.println("["+i+"]" + " Terms:");
+				flag = true;
+			}
+			else if (s.matches(".*If_true:.*")) {
+				flag = false;
+			}
+			else if (flag == true) {
+				String cond = s.trim().replaceAll("\\s{2,}", "");
+				cond = cond.trim().replaceAll("\\|", "");
+				System.out.println("\t" + cond);
+			}
+			i++;
+		}
+	}
+
+	
+	public static void addCondition(Scanner reader) {
+		
+		System.out.println("\n\nType the index number of condition insertion");
+		displayTerms();
+		System.out.print("> ");
+		int index = reader.nextInt();
+		
+		System.out.print("\nType attribute:\t");
+		String attribute = reader.next();
+		System.out.print("Type operator:\t");
+		String operator = reader.next();
+		System.out.print("Type value:\t");
+		double value = reader.nextDouble();
+		String condition = attribute + " " + operator + " " + Double.toString(value);
+		
+		System.out.println("\nAdding the condition \"" + condition + "\" to the selected index");
+		
+		String before = rules.get(index+1);
+		int count = before.length() - before.replace("|", "").length();
+		
+		String insertRule = "";
+		for (int i = 0; i < count; i++) {
+			insertRule += "|   ";
+		}
+		insertRule += " ";
+		insertRule += condition;
+		rules.add(index+1, insertRule);
+		
+	}
+	
+	public static void editCondition() {
+		
+	}
+	
+	public static void deleteCondition() {
 		
 	}
 	
@@ -173,17 +301,23 @@ public class Framework {
 	public static void predictionOutcome(Rengine re) {
 		
 		String testcsv = "C:/Users/student/Desktop/Thesis/testcsv.csv";
+		
 		re.assign("test", testcsv);
 		re.eval("testData <- read.csv(test)");
 		re.eval("result <- predictData(testData, trainRules)");
+		
 		REXP result = re.eval("capture.output(result)");
+		
 		String[] output = result.asStringArray();
+		
 		System.out.println("Size of output: " + output.length);
+		
 		for (String s : output) {
 			System.out.println(s);
 		}
 		
 	}
+	
 	
 	public static void loadFile(String filename, ArrayList<Data> dataset) throws FileNotFoundException, IOException, InvalidFormatException {
 		
@@ -223,6 +357,8 @@ public class Framework {
 		wb.close();
 		fis.close();
 	}
+	
+	
 	
 	public static void addData(ArrayList<Data> dataset, String[] data) {
 		
